@@ -1,0 +1,13 @@
+{
+  "title": "Sintel trailer excerpt",
+  "copyright": "Blender Foundation",
+  "attribution": "(c) copyright Blender Foundation | durian.blender.org",
+  "license": "Creative Commons Attribution 3.0 Unported",
+  "license_url": "https://creativecommons.org/licenses/by/3.0/",
+  "license_statement": "https://durian.blender.org/sharing/",
+  "source_url": "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4",
+  "source_sha256": "b670602fa00934ca27c4351bb0efe7ea7a07fae57284e44226025eeed7c51254",
+  "modifications": "Excerpt 00:33 to 00:39; resized to 640x360; sampled at 24 fps; audio removed; H.264 lossless storage of the decoded YUV420 reference.",
+  "reference_note": "The downloaded trailer is already compressed. Lossless storage preserves this decoded excerpt; it does not recover the original production master.",
+  "clip_sha256": "e4a4447263c65e13ea70748a0d845fe84c02c940590885209fdbf314338ec4ad"
+}

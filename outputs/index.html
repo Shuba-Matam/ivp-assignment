@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IVP Assignment Results</title>
+<style>
+:root{--ink:#182232;--muted:#536174;--card:#fff;--accent:#2455a4;--bg:#eef2f6}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Segoe UI,Arial,sans-serif;line-height:1.5}main{max-width:1120px;margin:auto;padding:28px}h1{font-size:clamp(1.7rem,4vw,2.6rem);margin-bottom:.2rem}h2{color:var(--accent)}.lead{color:var(--muted);max-width:78ch}.card{background:var(--card);padding:20px;margin:20px 0;border-radius:14px;box-shadow:0 4px 20px #24364d16}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}video{display:block;width:100%;margin-top:8px;background:#111;border-radius:8px;aspect-ratio:3/2}select{font:inherit;padding:.35rem .55rem;border:1px solid #aeb9c7;border-radius:6px;background:white}.status{color:var(--muted);font-size:.92rem}code{background:#e8edf4;padding:.1rem .35rem;border-radius:4px}a{color:var(--accent)}
+</style><script src="/assets/vendor/hls.min.js"></script></head><body><main>
+<h1>Image and Video Processing Assignment</h1><p class="lead">Shuba Bhuvi Matam &middot; RA2311031010068. This page clearly separates ordinary MP4 previews from packaged HLS playback. Run <code>python assignment.py --serve</code> and open the printed localhost address.</p>
+
+        <section class="card">
+          <h2>Generated road scene</h2>
+          <div class="grid">
+            <div><h3>MP4 preview</h3><p>A conventional MP4 file for direct browser playback.</p><video controls preload="metadata" src="q10/generated_preview.mp4"></video></div>
+            <div><h3>HLS adaptive stream</h3><p>A master playlist with 180, 420, and 850 kbit/s variants.</p><label for="level-generated">Quality level:</label> <select id="level-generated" disabled><option value="-1">Auto</option></select><video id="hls-generated" controls preload="metadata"></video><p id="status-generated" class="status"></p></div>
+          </div>
+        </section>
+        <section class="card">
+          <h2>Real Sintel excerpt</h2>
+          <div class="grid">
+            <div><h3>MP4 preview</h3><p>A conventional MP4 file for direct browser playback.</p><video controls preload="metadata" src="q10/real_preview.mp4"></video></div>
+            <div><h3>HLS adaptive stream</h3><p>A master playlist with 180, 420, and 850 kbit/s variants.</p><label for="level-real">Quality level:</label> <select id="level-real" disabled><option value="-1">Auto</option></select><video id="hls-real" controls preload="metadata"></video><p id="status-real" class="status"></p></div>
+          </div>
+        </section>
+<section class="card"><h2>Real-clip attribution</h2><p><em>Sintel</em> trailer excerpt, &copy; Blender Foundation, licensed under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. The 33&ndash;39 second excerpt was resized to 640&times;360, sampled at 24 fps, and stored losslessly from the decoded trailer without audio. The downloaded trailer was already compressed, so this reference does not recover the production master.</p></section>
+<section class="card"><h2>Measured results</h2><p>All experiment values come from <a href="/outputs/metrics.json">outputs/metrics.json</a>. Comparison figures are available in each <code>outputs/qN</code> directory.</p></section>
+<script>
+function setupHls(videoId,statusId,selectId,url){const video=document.getElementById(videoId),status=document.getElementById(statusId),select=document.getElementById(selectId),targetLabels=['Low - 180 kbit/s target','Medium - 420 kbit/s target','High - 850 kbit/s target'];if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=url;status.textContent='Native browser HLS playback. Manual level forcing is available in hls.js browsers.';}else if(window.Hls&&Hls.isSupported()){const hls=new Hls();hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,()=>{hls.levels.forEach((level,index)=>{const option=document.createElement('option');option.value=index;option.textContent=targetLabels[index]||('Level '+index);select.appendChild(option);});select.disabled=false;status.textContent='hls.js loaded the three-variant master playlist in Auto mode.';});select.addEventListener('change',()=>{hls.currentLevel=Number(select.value);status.textContent=select.value==='-1'?'Auto adaptive level selected.':'Manually forced '+select.options[select.selectedIndex].textContent+'.';});hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal)status.textContent='HLS playback error: '+data.details;});}else{status.textContent='This browser cannot play HLS. FFmpeg HTTP validation is still recorded in metrics.json.';}}
+setupHls('hls-generated', 'status-generated', 'level-generated', '/outputs/q10/generated_hls/master.m3u8');setupHls('hls-real', 'status-real', 'level-real', '/outputs/q10/real_hls/master.m3u8');
+</script></main></body></html>

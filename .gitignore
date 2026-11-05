@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+.work/
+reports/qa/
+reports/reference/
+reports/artifact.md
+reports/reference_artifact.md
+reports/report_blueprint.md
+reports/evidence_inventory.json
+*.tmp
+submission/*.zip

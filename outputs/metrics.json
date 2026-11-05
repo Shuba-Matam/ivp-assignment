@@ -1,0 +1,674 @@
+{
+  "environment": {
+    "author": "Shuba Bhuvi Matam",
+    "registration_number": "RA2311031010068",
+    "generated_at_utc": "2026-11-05T20:17:15.250338+00:00",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.13.3",
+    "numpy": "2.5.4",
+    "opencv": "5.0.0",
+    "matplotlib": "3.11.2",
+    "imageio_ffmpeg": "0.8.1",
+    "ffmpeg_executable": "ffmpeg-win-x86_64-v9.0.2.exe",
+    "ffmpeg_version": "ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+  },
+  "inputs": {
+    "generated_image": {
+      "path": "inputs/demo_image.png",
+      "size_bytes": 92891,
+      "sha256": "7f47737f4e25e8efb80bde6d585c5c9b13f609e502fe2dc6ea43cc1be4f2e755",
+      "width": 480,
+      "height": 320
+    },
+    "generated_video": {
+      "path": "inputs/demo_video.avi",
+      "size_bytes": 5683262,
+      "sha256": "741065891d28f64d8fb35fab91f90e1f85341d83dd0b966075ab76bdc9f997fc",
+      "codec_container_note": "avi",
+      "frame_count": 96,
+      "fps": 24.0,
+      "width": 480,
+      "height": 320,
+      "duration_seconds": 4.0
+    },
+    "real_video": {
+      "path": "inputs/real_clip.mp4",
+      "size_bytes": 5037714,
+      "sha256": "e4a4447263c65e13ea70748a0d845fe84c02c940590885209fdbf314338ec4ad",
+      "codec_container_note": "mp4",
+      "frame_count": 144,
+      "fps": 24.0,
+      "width": 640,
+      "height": 360,
+      "duration_seconds": 6.0
+    },
+    "deterministic_rng_seed": 338604820
+  },
+  "q1": {
+    "title": "Sobel and Canny edge detection",
+    "parameters": {
+      "gaussian_kernel": [
+        5,
+        5
+      ],
+      "gaussian_sigma": 1.1,
+      "sobel_kernel": 3,
+      "canny_thresholds": [
+        70,
+        150
+      ],
+      "canny_l2_gradient": true
+    },
+    "sobel": {
+      "mean_magnitude": 21.731449,
+      "maximum_magnitude": 361.831451,
+      "nonzero_pixels": 95769
+    },
+    "canny": {
+      "edge_pixels": 4398,
+      "edge_percentage": 2.863281
+    },
+    "outputs": {
+      "sobel": "outputs/q1/sobel_magnitude.png",
+      "canny": "outputs/q1/canny_edges.png",
+      "comparison_figure": "outputs/q1/edge_detection_comparison.png"
+    },
+    "runtime_seconds": 0.883
+  },
+  "q2": {
+    "title": "Lossless PNG and lossy JPEG image compression",
+    "reference": {
+      "path": "inputs/demo_image.png",
+      "size_bytes": 92891
+    },
+    "png": {
+      "path": "outputs/q2/lossless.png",
+      "size_bytes": 45193,
+      "mse": 0.0,
+      "psnr_db": null,
+      "exact_reconstruction": true
+    },
+    "jpeg": {
+      "path": "outputs/q2/lossy_q35.jpg",
+      "quality": 35,
+      "size_bytes": 9871,
+      "mse": 68.241083,
+      "psnr_db": 29.790345,
+      "size_reduction_vs_png_percent": 78.158122
+    },
+    "outputs": {
+      "difference": "outputs/q2/jpeg_absolute_difference.png",
+      "comparison_figure": "outputs/q2/compression_comparison.png"
+    },
+    "runtime_seconds": 1.888
+  },
+  "q3": {
+    "title": "Threshold and region-based segmentation",
+    "otsu": {
+      "threshold": 124.0,
+      "foreground_pixels": 67810,
+      "foreground_percentage": 44.147135
+    },
+    "seeded_region_growing": {
+      "seed_xy": [
+        30,
+        30
+      ],
+      "lab_distance_threshold": 27.0,
+      "connectivity": 8,
+      "region_pixels": 23873,
+      "region_percentage": 15.542318
+    },
+    "comparison": {
+      "intersection_over_union": 0.351061,
+      "interpretation": "Otsu classifies every pixel by one global gray-level threshold; seeded growth returns only the connected color-similar area attached to the seed."
+    },
+    "outputs": {
+      "otsu_mask": "outputs/q3/otsu_mask.png",
+      "region_mask": "outputs/q3/seeded_region_mask.png",
+      "overlay": "outputs/q3/region_overlay.png",
+      "comparison_figure": "outputs/q3/segmentation_comparison.png"
+    },
+    "runtime_seconds": 1.64
+  },
+  "q4": {
+    "title": "Extract every video frame as an individual PNG",
+    "source": {
+      "path": "inputs/demo_video.avi",
+      "size_bytes": 5683262,
+      "sha256": "741065891d28f64d8fb35fab91f90e1f85341d83dd0b966075ab76bdc9f997fc",
+      "codec_container_note": "avi",
+      "frame_count": 96,
+      "fps": 24.0,
+      "width": 480,
+      "height": 320,
+      "duration_seconds": 4.0
+    },
+    "extraction": {
+      "format": "PNG",
+      "frame_count": 96,
+      "matches_reported_source_count": true,
+      "directory": "outputs/q4/frames",
+      "first_file": "outputs/q4/frames/frame_0000.png",
+      "last_file": "outputs/q4/frames/frame_0095.png",
+      "total_png_bytes": 4634589
+    },
+    "outputs": {
+      "sample_figure": "outputs/q4/extracted_frame_samples.png"
+    },
+    "runtime_seconds": 4.144
+  },
+  "q5": {
+    "title": "Video sampling by frame-rate reduction",
+    "method": "Keep every fourth frame, write at one-quarter frame rate, and hold each retained sample for four original time instants during quality comparison.",
+    "original": {
+      "path": "inputs/demo_video.avi",
+      "size_bytes": 5683262,
+      "sha256": "741065891d28f64d8fb35fab91f90e1f85341d83dd0b966075ab76bdc9f997fc",
+      "codec_container_note": "avi",
+      "frame_count": 96,
+      "fps": 24.0,
+      "width": 480,
+      "height": 320,
+      "duration_seconds": 4.0
+    },
+    "sampled": {
+      "path": "outputs/q5/sampled_6fps.avi",
+      "size_bytes": 1425556,
+      "sha256": "76d70ec29fae2d33fe561c10063ac96733938738b4597a71b510eb476afa9932",
+      "codec_container_note": "avi",
+      "frame_count": 24,
+      "fps": 6.0,
+      "width": 480,
+      "height": 320,
+      "duration_seconds": 4.0
+    },
+    "sampling_factor": 4,
+    "duration_difference_seconds": 0.0,
+    "time_aligned_sample_and_hold": {
+      "mse": 44.532311,
+      "psnr_db": 31.644051,
+      "finite_psnr_mean_db": 30.684912,
+      "comparison_frame_count": 96
+    },
+    "outputs": {
+      "sampled_video": "outputs/q5/sampled_6fps.avi",
+      "quality_plot": "outputs/q5/time_aligned_hold_quality.png",
+      "comparison_figure": "outputs/q5/sampling_visual_comparison.png"
+    },
+    "runtime_seconds": 1.788
+  },
+  "q6": {
+    "title": "Per-frame geometric transformations on a fixed canvas",
+    "source": {
+      "path": "inputs/demo_video.avi",
+      "size_bytes": 5683262,
+      "sha256": "741065891d28f64d8fb35fab91f90e1f85341d83dd0b966075ab76bdc9f997fc",
+      "codec_container_note": "avi",
+      "frame_count": 96,
+      "fps": 24.0,
+      "width": 480,
+      "height": 320,
+      "duration_seconds": 4.0
+    },
+    "translation": {
+      "x_range_pixels": [
+        -55,
+        55
+      ],
+      "y_range_pixels": [
+        -25,
+        25
+      ],
+      "effect": "Shifts every coordinate; uncovered pixels are filled and some content can be clipped.",
+      "video": "outputs/q6/translated.avi"
+    },
+    "rotation": {
+      "angle_range_degrees": [
+        -18,
+        18
+      ],
+      "center": [
+        240.0,
+        160.0
+      ],
+      "effect": "Rotates around the frame center; interpolation resamples pixels and fixed-canvas corners are filled.",
+      "video": "outputs/q6/rotated.avi"
+    },
+    "scaling": {
+      "scale_range": [
+        0.7,
+        1.15
+      ],
+      "effect": "Changes apparent object size; downscaling removes detail and scaling above one clips edges on the fixed canvas.",
+      "video": "outputs/q6/scaled_fixed_canvas.avi"
+    },
+    "outputs": {
+      "comparison_figure": "outputs/q6/geometric_transformations.png",
+      "translation_video": "outputs/q6/translated.avi",
+      "rotation_video": "outputs/q6/rotated.avi",
+      "scaling_video": "outputs/q6/scaled_fixed_canvas.avi"
+    },
+    "runtime_seconds": 3.182
+  },
+  "q7": {
+    "title": "Signed-safe difference between two video frames",
+    "frames": [
+      20,
+      68
+    ],
+    "calculation": "Convert uint8 to int16 before subtraction, then take absolute value to avoid unsigned wrap-around.",
+    "difference": {
+      "mean_absolute_difference": 2.51181,
+      "maximum_absolute_difference": 193,
+      "changed_pixel_threshold": 28,
+      "changed_pixels": 5334,
+      "changed_percentage": 3.472656
+    },
+    "outputs": {
+      "absolute_difference": "outputs/q7/absolute_difference.png",
+      "changed_mask": "outputs/q7/changed_pixels_mask.png",
+      "signed_visualization": "outputs/q7/signed_difference_offset128.png",
+      "comparison_figure": "outputs/q7/frame_difference_comparison.png"
+    },
+    "runtime_seconds": 1.09
+  },
+  "q8": {
+    "title": "Spatial filtering of all video frames",
+    "noise": {
+      "type": "salt and pepper",
+      "amount": 0.035,
+      "rng_seed": 338604820
+    },
+    "filter": {
+      "type": "median",
+      "kernel_size": 3,
+      "all_frames_processed": 96
+    },
+    "before_filtering": {
+      "mse_vs_original": 664.020374,
+      "psnr_db_vs_original": 19.90899
+    },
+    "after_filtering": {
+      "mse_vs_original": 59.276252,
+      "psnr_db_vs_original": 30.401996,
+      "psnr_improvement_db": 10.493007,
+      "mse_reduction_percent": 91.073127
+    },
+    "outputs": {
+      "noisy_video": "outputs/q8/salt_pepper_noisy.avi",
+      "filtered_video": "outputs/q8/median_filtered.avi",
+      "comparison_figure": "outputs/q8/spatial_filtering_comparison.png"
+    },
+    "runtime_seconds": 3.828
+  },
+  "q9": {
+    "title": "H.264 compression before streaming",
+    "reference_nuance": "The downloaded trailer is already compressed. Lossless storage preserves this decoded excerpt; it does not recover the original production master.",
+    "sources": {
+      "generated": {
+        "reference": {
+          "path": "inputs/demo_video.avi",
+          "size_bytes": 5683262,
+          "sha256": "741065891d28f64d8fb35fab91f90e1f85341d83dd0b966075ab76bdc9f997fc",
+          "codec_container_note": "avi",
+          "frame_count": 96,
+          "fps": 24.0,
+          "width": 480,
+          "height": 320,
+          "duration_seconds": 4.0
+        },
+        "compressed": {
+          "path": "outputs/q9/generated_h264_crf29.mp4",
+          "size_bytes": 26116,
+          "sha256": "dee8bfcb427223ca27642374cbfd8d2443d477dc266b16632c2eed3428b4490b",
+          "codec_container_note": "mp4",
+          "frame_count": 96,
+          "fps": 24.0,
+          "width": 480,
+          "height": 320,
+          "duration_seconds": 4.0
+        },
+        "encoder": {
+          "codec": "H.264/libx264",
+          "crf": 29,
+          "preset": "medium",
+          "pixel_format": "yuv420p"
+        },
+        "quality": {
+          "paired_frame_count": 96,
+          "fps_match": true,
+          "dimensions_match": true,
+          "mse": 32.955649,
+          "psnr_db": 32.951505,
+          "finite_frame_psnr_mean_db": 32.953219
+        },
+        "compression_ratio_reference_to_compressed": 217.616097,
+        "size_reduction_percent": 99.540475
+      },
+      "real": {
+        "reference": {
+          "path": "inputs/real_clip.mp4",
+          "size_bytes": 5037714,
+          "sha256": "e4a4447263c65e13ea70748a0d845fe84c02c940590885209fdbf314338ec4ad",
+          "codec_container_note": "mp4",
+          "frame_count": 144,
+          "fps": 24.0,
+          "width": 640,
+          "height": 360,
+          "duration_seconds": 6.0
+        },
+        "compressed": {
+          "path": "outputs/q9/real_h264_crf30.mp4",
+          "size_bytes": 99666,
+          "sha256": "f1a22e22f856d0d6e9c66e2a44dc2c8ef81f371a860a41547771420225609c3f",
+          "codec_container_note": "mp4",
+          "frame_count": 144,
+          "fps": 24.0,
+          "width": 640,
+          "height": 360,
+          "duration_seconds": 6.0
+        },
+        "encoder": {
+          "codec": "H.264/libx264",
+          "crf": 30,
+          "preset": "medium",
+          "pixel_format": "yuv420p"
+        },
+        "quality": {
+          "paired_frame_count": 144,
+          "fps_match": true,
+          "dimensions_match": true,
+          "mse": 10.990316,
+          "psnr_db": 37.720702,
+          "finite_frame_psnr_mean_db": 38.092867
+        },
+        "compression_ratio_reference_to_compressed": 50.545964,
+        "size_reduction_percent": 98.021603
+      }
+    },
+    "outputs": {
+      "comparison_figure": "outputs/q9/h264_size_quality_comparison.png",
+      "reconstructed_frame_evidence": "outputs/q9/h264_reconstructed_frame_evidence.png"
+    },
+    "runtime_seconds": 5.899
+  },
+  "q10": {
+    "title": "Video streaming with three meaningful target bitrates",
+    "method": "Package independent 2-second HLS transport-stream segments at 180, 420, and 850 kbit/s. During --all, serve the repository on an ephemeral localhost port and require byte-identical RGB decodes through local-file and HTTP playlist access.",
+    "http_validation": {
+      "host": "127.0.0.1",
+      "ephemeral_port_used": true,
+      "server_stopped_after_validation": true
+    },
+    "sources": {
+      "generated": {
+        "reference": {
+          "path": "inputs/demo_video.avi",
+          "size_bytes": 5683262,
+          "sha256": "741065891d28f64d8fb35fab91f90e1f85341d83dd0b966075ab76bdc9f997fc",
+          "codec_container_note": "avi",
+          "frame_count": 96,
+          "fps": 24.0,
+          "width": 480,
+          "height": 320,
+          "duration_seconds": 4.0
+        },
+        "mp4_preview": {
+          "path": "outputs/q10/generated_preview.mp4",
+          "size_bytes": 35478,
+          "sha256": "e938c59738b4c060cbb5bb8a7ea76f1ef68380ccc61c8d29a5c0f8bddc5c0d4a",
+          "codec_container_note": "mp4",
+          "frame_count": 96,
+          "fps": 24.0,
+          "width": 480,
+          "height": 320,
+          "duration_seconds": 4.0
+        },
+        "variants": {
+          "low": {
+            "target_bitrate": "180k",
+            "playlist": "outputs/q10/generated_hls/low/index.m3u8",
+            "segments": [
+              "outputs/q10/generated_hls/low/segment_000.ts",
+              "outputs/q10/generated_hls/low/segment_001.ts"
+            ],
+            "segment_count": 2,
+            "segment_data_size_bytes": 61476,
+            "playlist_size_bytes": 207,
+            "package_size_bytes": 61683,
+            "actual_segment_data_bitrate_kbps": 122.952,
+            "package_bitrate_including_playlist_kbps": 123.366,
+            "quality_vs_reference": {
+              "paired_frame_count": 96,
+              "fps_match": true,
+              "dimensions_match": true,
+              "mse": 35.884198,
+              "psnr_db": 32.581771,
+              "finite_frame_psnr_mean_db": 32.791211
+            },
+            "local_vs_http_verification": {
+              "local_frame_count": 96,
+              "http_frame_count": 96,
+              "frame_counts_match": true,
+              "decoded_rgb_sha256_local": "aa008bb88f212188113f24cedf55c858c59384ee4e13de680fc748cb6f44be2c",
+              "decoded_rgb_sha256_http": "aa008bb88f212188113f24cedf55c858c59384ee4e13de680fc748cb6f44be2c",
+              "decoded_content_matches": true,
+              "validation_url": "http://127.0.0.1:59569/outputs/q10/generated_hls/low/index.m3u8"
+            }
+          },
+          "medium": {
+            "target_bitrate": "420k",
+            "playlist": "outputs/q10/generated_hls/medium/index.m3u8",
+            "segments": [
+              "outputs/q10/generated_hls/medium/segment_000.ts",
+              "outputs/q10/generated_hls/medium/segment_001.ts"
+            ],
+            "segment_count": 2,
+            "segment_data_size_bytes": 118816,
+            "playlist_size_bytes": 207,
+            "package_size_bytes": 119023,
+            "actual_segment_data_bitrate_kbps": 237.632,
+            "package_bitrate_including_playlist_kbps": 238.046,
+            "quality_vs_reference": {
+              "paired_frame_count": 96,
+              "fps_match": true,
+              "dimensions_match": true,
+              "mse": 25.175705,
+              "psnr_db": 34.120987,
+              "finite_frame_psnr_mean_db": 34.155787
+            },
+            "local_vs_http_verification": {
+              "local_frame_count": 96,
+              "http_frame_count": 96,
+              "frame_counts_match": true,
+              "decoded_rgb_sha256_local": "e23c2a0d6cca43f524a5bc42a5b15f3c1f8825b8d15a0fa265f4e0a38ebd8b50",
+              "decoded_rgb_sha256_http": "e23c2a0d6cca43f524a5bc42a5b15f3c1f8825b8d15a0fa265f4e0a38ebd8b50",
+              "decoded_content_matches": true,
+              "validation_url": "http://127.0.0.1:59569/outputs/q10/generated_hls/medium/index.m3u8"
+            }
+          },
+          "high": {
+            "target_bitrate": "850k",
+            "playlist": "outputs/q10/generated_hls/high/index.m3u8",
+            "segments": [
+              "outputs/q10/generated_hls/high/segment_000.ts",
+              "outputs/q10/generated_hls/high/segment_001.ts"
+            ],
+            "segment_count": 2,
+            "segment_data_size_bytes": 183300,
+            "playlist_size_bytes": 207,
+            "package_size_bytes": 183507,
+            "actual_segment_data_bitrate_kbps": 366.6,
+            "package_bitrate_including_playlist_kbps": 367.014,
+            "quality_vs_reference": {
+              "paired_frame_count": 96,
+              "fps_match": true,
+              "dimensions_match": true,
+              "mse": 23.204405,
+              "psnr_db": 34.475099,
+              "finite_frame_psnr_mean_db": 34.483521
+            },
+            "local_vs_http_verification": {
+              "local_frame_count": 96,
+              "http_frame_count": 96,
+              "frame_counts_match": true,
+              "decoded_rgb_sha256_local": "46c24a05b478404e027d3132b84465a935db242e6c24fe8934fb71c1ef954cf1",
+              "decoded_rgb_sha256_http": "46c24a05b478404e027d3132b84465a935db242e6c24fe8934fb71c1ef954cf1",
+              "decoded_content_matches": true,
+              "validation_url": "http://127.0.0.1:59569/outputs/q10/generated_hls/high/index.m3u8"
+            }
+          }
+        },
+        "master_playlist": "outputs/q10/generated_hls/master.m3u8"
+      },
+      "real": {
+        "reference": {
+          "path": "inputs/real_clip.mp4",
+          "size_bytes": 5037714,
+          "sha256": "e4a4447263c65e13ea70748a0d845fe84c02c940590885209fdbf314338ec4ad",
+          "codec_container_note": "mp4",
+          "frame_count": 144,
+          "fps": 24.0,
+          "width": 640,
+          "height": 360,
+          "duration_seconds": 6.0
+        },
+        "mp4_preview": {
+          "path": "outputs/q10/real_preview.mp4",
+          "size_bytes": 179387,
+          "sha256": "6ab74f5c168785eda2c91ff9e09c7b6157fe006ac8adc823d62ccf667b52fb72",
+          "codec_container_note": "mp4",
+          "frame_count": 144,
+          "fps": 24.0,
+          "width": 640,
+          "height": 360,
+          "duration_seconds": 6.0
+        },
+        "variants": {
+          "low": {
+            "target_bitrate": "180k",
+            "playlist": "outputs/q10/real_hls/low/index.m3u8",
+            "segments": [
+              "outputs/q10/real_hls/low/segment_000.ts",
+              "outputs/q10/real_hls/low/segment_001.ts",
+              "outputs/q10/real_hls/low/segment_002.ts"
+            ],
+            "segment_count": 3,
+            "segment_data_size_bytes": 125960,
+            "playlist_size_bytes": 240,
+            "package_size_bytes": 126200,
+            "actual_segment_data_bitrate_kbps": 167.946667,
+            "package_bitrate_including_playlist_kbps": 168.266667,
+            "quality_vs_reference": {
+              "paired_frame_count": 144,
+              "fps_match": true,
+              "dimensions_match": true,
+              "mse": 14.995487,
+              "psnr_db": 36.371198,
+              "finite_frame_psnr_mean_db": 37.891616
+            },
+            "local_vs_http_verification": {
+              "local_frame_count": 144,
+              "http_frame_count": 144,
+              "frame_counts_match": true,
+              "decoded_rgb_sha256_local": "437167502f409bcbc5cfe35588df4aee38a1ca34782d4bb42fd9cba2c3bbb865",
+              "decoded_rgb_sha256_http": "437167502f409bcbc5cfe35588df4aee38a1ca34782d4bb42fd9cba2c3bbb865",
+              "decoded_content_matches": true,
+              "validation_url": "http://127.0.0.1:59569/outputs/q10/real_hls/low/index.m3u8"
+            }
+          },
+          "medium": {
+            "target_bitrate": "420k",
+            "playlist": "outputs/q10/real_hls/medium/index.m3u8",
+            "segments": [
+              "outputs/q10/real_hls/medium/segment_000.ts",
+              "outputs/q10/real_hls/medium/segment_001.ts",
+              "outputs/q10/real_hls/medium/segment_002.ts"
+            ],
+            "segment_count": 3,
+            "segment_data_size_bytes": 271848,
+            "playlist_size_bytes": 240,
+            "package_size_bytes": 272088,
+            "actual_segment_data_bitrate_kbps": 362.464,
+            "package_bitrate_including_playlist_kbps": 362.784,
+            "quality_vs_reference": {
+              "paired_frame_count": 144,
+              "fps_match": true,
+              "dimensions_match": true,
+              "mse": 5.674569,
+              "psnr_db": 40.591475,
+              "finite_frame_psnr_mean_db": 41.894313
+            },
+            "local_vs_http_verification": {
+              "local_frame_count": 144,
+              "http_frame_count": 144,
+              "frame_counts_match": true,
+              "decoded_rgb_sha256_local": "d867be5c00c29674c3470d9872625c660624e39856de4f77b8d7a07cf685fe0e",
+              "decoded_rgb_sha256_http": "d867be5c00c29674c3470d9872625c660624e39856de4f77b8d7a07cf685fe0e",
+              "decoded_content_matches": true,
+              "validation_url": "http://127.0.0.1:59569/outputs/q10/real_hls/medium/index.m3u8"
+            }
+          },
+          "high": {
+            "target_bitrate": "850k",
+            "playlist": "outputs/q10/real_hls/high/index.m3u8",
+            "segments": [
+              "outputs/q10/real_hls/high/segment_000.ts",
+              "outputs/q10/real_hls/high/segment_001.ts",
+              "outputs/q10/real_hls/high/segment_002.ts"
+            ],
+            "segment_count": 3,
+            "segment_data_size_bytes": 554600,
+            "playlist_size_bytes": 240,
+            "package_size_bytes": 554840,
+            "actual_segment_data_bitrate_kbps": 739.466667,
+            "package_bitrate_including_playlist_kbps": 739.786667,
+            "quality_vs_reference": {
+              "paired_frame_count": 144,
+              "fps_match": true,
+              "dimensions_match": true,
+              "mse": 2.774336,
+              "psnr_db": 43.699212,
+              "finite_frame_psnr_mean_db": 44.580841
+            },
+            "local_vs_http_verification": {
+              "local_frame_count": 144,
+              "http_frame_count": 144,
+              "frame_counts_match": true,
+              "decoded_rgb_sha256_local": "312685f375426ace158f54632ac68c89ce63f82e16546763c08b832410ade665",
+              "decoded_rgb_sha256_http": "312685f375426ace158f54632ac68c89ce63f82e16546763c08b832410ade665",
+              "decoded_content_matches": true,
+              "validation_url": "http://127.0.0.1:59569/outputs/q10/real_hls/high/index.m3u8"
+            }
+          }
+        },
+        "master_playlist": "outputs/q10/real_hls/master.m3u8"
+      }
+    },
+    "outputs": {
+      "quality_size_plot": "outputs/q10/bitrate_size_quality.png",
+      "reconstructed_frame_evidence": "outputs/q10/hls_bitrate_reconstructed_frame_evidence.png",
+      "local_demo": "outputs/index.html"
+    },
+    "runtime_seconds": 26.489
+  },
+  "run_summary": {
+    "questions_completed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "question_count": 10,
+    "total_runtime_seconds": 50.845,
+    "metrics_file": "outputs/metrics.json",
+    "html_demo": "outputs/index.html"
+  }
+}
